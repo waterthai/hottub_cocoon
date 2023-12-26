@@ -10,24 +10,24 @@ from close_all import Close_All
 import threading
 
 
-sys.path.append('/home/pi/hottub_ma/besgo/')
+sys.path.append('/home/pi/hottub_cocoon/besgo/')
 from main_besgo import Main_Besgo
-sys.path.append('/home/pi/hottub_ma/plc/')
+sys.path.append('/home/pi/hottub_cocoon/plc/')
 from main_plc import Main_PLC
 from modbus import Modbus
-sys.path.append('/home/pi/hottub_ma/relay/')
+sys.path.append('/home/pi/hottub_cocoon/relay/')
 from main_relay import Main_relay
-sys.path.append('/home/pi/hottub_ma/ph/')
+sys.path.append('/home/pi/hottub_cocoon/ph/')
 from main_ph import Main_PH
-sys.path.append('/home/pi/hottub_ma/volttag/')
+sys.path.append('/home/pi/hottub_cocoon/volttag/')
 from main_volt_tag import Main_volt_tag
-sys.path.append('/home/pi/hottub_ma/setting/')
+sys.path.append('/home/pi/hottub_cocoon/setting/')
 from path_url import Path_url
-sys.path.append('/home/pi/hottub_ma/heater/')
+sys.path.append('/home/pi/hottub_cocoon/heater/')
 from main_heater import Main_Heater
 from main_heatpump import Main_HeatPump
-sys.path.append('/home/pi/hottub_ma/plc/')
-sys.path.append('/home/pi/hottub_ma/relay/')
+sys.path.append('/home/pi/hottub_cocoon/plc/')
+sys.path.append('/home/pi/hottub_cocoon/relay/')
 from modbus_relay import Modbus_relay
 
 
@@ -52,14 +52,14 @@ url_selection = path_url.url_selection
 def counter_before_backwash():
     while True:
         try:
-            read_status_backwash = open('/home/pi/hottub_ma/txt_file/status_besgo.txt','r')
+            read_status_backwash = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','r')
             status_backwash = read_status_backwash.read().rstrip('\n')
             if str(status_backwash) == "True":
-                read_counter_backwash = open('/home/pi/hottub_ma/txt_file/counter_start_before_backwash.txt','r') 
+                read_counter_backwash = open('/home/pi/hottub_cocoon/txt_file/counter_start_before_backwash.txt','r') 
                 number_counter_backwash = read_counter_backwash.read().rstrip('\n')
                 sum_counter = int(number_counter_backwash) + 1
                 print("COUNTER BEFORE BACKWASH : "+str(sum_counter))
-                with open('/home/pi/hottub_ma/txt_file/counter_start_before_backwash.txt','w') as write_counter:
+                with open('/home/pi/hottub_cocoon/txt_file/counter_start_before_backwash.txt','w') as write_counter:
                     write_counter.write(str(sum_counter))
                     write_counter.close()
             time.sleep(1)
@@ -70,14 +70,14 @@ def counter_before_backwash():
 def counter_start_backwash_time():
     while True:
         try:
-            read_status_backwash = open('/home/pi/hottub_ma/txt_file/status_besgo_start_counter.txt','r')
+            read_status_backwash = open('/home/pi/hottub_cocoon/txt_file/status_besgo_start_counter.txt','r')
             status_backwash = read_status_backwash.read().rstrip('\n')
             if str(status_backwash) == "True":
-                read_counter_backwash = open('/home/pi/hottub_ma/txt_file/counter_backwash_working.txt','r') 
+                read_counter_backwash = open('/home/pi/hottub_cocoon/txt_file/counter_backwash_working.txt','r') 
                 number_counter_backwash = read_counter_backwash.read().rstrip('\n')
                 sum_counter = int(number_counter_backwash) + 1
                 print("COUNTER WORKING BACKWASH : "+str(sum_counter))
-                with open('/home/pi/hottub_ma/txt_file/counter_backwash_working.txt','w') as write_counter:
+                with open('/home/pi/hottub_cocoon/txt_file/counter_backwash_working.txt','w') as write_counter:
                     write_counter.write(str(sum_counter))
                     write_counter.close()
             time.sleep(1)
@@ -146,16 +146,16 @@ try:
 
         write_file.start_write(relay_8, plc, temperature, ph, orp, read_pressure, plc_in)
 
-        read_status_besgo = open('/home/pi/hottub_ma/txt_file/status_besgo.txt','r')
+        read_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','r')
         status_bes = read_status_besgo.read().rstrip('\n')
 
         #อ่านค่า set pressure จาก front
-        read_set_pressure = open('/home/pi/hottub_ma/txt_file/set_pressure.txt','r')
+        read_set_pressure = open('/home/pi/hottub_cocoon/txt_file/set_pressure.txt','r')
         set_pressure_text = read_set_pressure.read().rstrip('\n')
         split_set_pressure = set_pressure_text.split(",")
 
         # check nighttime swicth
-        lock_machine = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+        lock_machine = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
         if lock_machine.read() != "":
             sum_counter_lock = write_file.counter_locking(data_setting)
             
@@ -165,7 +165,7 @@ try:
         plc_all_in = modbus_read.read_all_plc_in()
         plc_all_out = modbus_read.read_all_plc_out()
         #ตรวจาอยลูกลอย
-        read_loading_in_tank = open('/home/pi/hottub_ma/txt_file/stop_loading_in_tank.txt','r')
+        read_loading_in_tank = open('/home/pi/hottub_cocoon/txt_file/stop_loading_in_tank.txt','r')
         status_loading_in_tank = read_loading_in_tank.read().rstrip('\n')
 
         if status_loading_in_tank == "False":
@@ -193,7 +193,7 @@ try:
                     print("in of time")
                     #check bypass mode
                     if str(setting_mode[0]['sm_bypass']) == "0":
-                        count_down = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+                        count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
                         if count_down.read() == '':    
                             besgo.start_besgo(current_time, relay_8, plc, setting_mode, setting_selection,plc_all_in)
                             if relay_8[4] == True:
@@ -241,7 +241,7 @@ try:
                             
                         
                     else:
-                        count_down = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+                        count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
                         if count_down.read() != '':
                             write_file.clear_pressure_time()
                             counter_pressure = 0
@@ -281,7 +281,7 @@ try:
                 print("PLC NOT FALSE"+str(relay_8[4]))
                 #check bypass mode
                 if str(setting_mode[0]['sm_bypass']) == "0":
-                    count_down = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+                    count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
                     if count_down.read() == '':
                         besgo.start_besgo(current_time, relay_8, plc, setting_mode, setting_selection,plc_all_in)
                         if relay_8[4] == True:
@@ -325,7 +325,7 @@ try:
                             
                         
                 else:
-                    count_down = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+                    count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
                     if count_down.read() != '':
                         write_file.clear_pressure_time()
                         counter_pressure = 0

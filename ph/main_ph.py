@@ -3,9 +3,9 @@ import json
 import sys
 from setting.path_url import Path_url
 from  modbus_ph import Modbus_PH
-sys.path.append('/home/pi/hottub_ma/orp/')
+sys.path.append('/home/pi/hottub_cocoon/orp/')
 from modbus_orp import Modbus_ORP
-sys.path.append('/home/pi/hottub_ma/apf/')
+sys.path.append('/home/pi/hottub_cocoon/apf/')
 from modbus_apf import Modbus_APF
 
 path_url = Path_url()

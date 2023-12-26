@@ -2,7 +2,7 @@ import minimalmodbus
 import serial
 import sys
 from pymodbus.client import ModbusSerialClient
-sys.path.append('/home/pi/hottub_ma/setting/')
+sys.path.append('/home/pi/hottub_cocoon/setting/')
 from path_url import Path_url
 import requests
 

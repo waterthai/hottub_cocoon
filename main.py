@@ -83,6 +83,23 @@ def counter_start_backwash_time():
             time.sleep(1)
         except:
             pass
+def counter_start_heater():
+    while True:
+        try:
+            read_status_auto = open('/home/pi/hottub_cocoon/txt_file/status_working_heater.txt','r')
+            status_working = read_status_auto.read().rstrip('\n')
+            if status_working == "True":
+                read_counter_open = open('/home/pi/hottub_cocoon/txt_file/counter_open_heater.txt','r')
+                counter_open_heater = read_counter_open.read().rstrip('\n')
+                if int(counter_open_heater) <= 60:
+                    sum_counter_heater = int(counter_open_heater) + 1
+                    with open('/home/pi/hottub_cocoon/txt_file/counter_open_heater.txt','w') as write_counter_open:
+                        write_counter_open.write(str(sum_counter_heater))
+                        write_counter_open.close()
+
+            time.sleep(1)
+        except:
+            pass
 
         
 
@@ -90,6 +107,8 @@ before_backwash = threading.Thread(target=counter_before_backwash, args=())
 before_backwash.start()
 start_counter_backwash =  threading.Thread(target=counter_start_backwash_time, args=())
 start_counter_backwash.start()
+start_counter_heater =  threading.Thread(target=counter_start_heater, args=())
+start_counter_heater.start()
 
 try:
     while True:

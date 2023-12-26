@@ -9,20 +9,20 @@ import json
 from close_all import Close_All
 
 
-sys.path.append('/home/pi/hottub_ma/besgo/')
+sys.path.append('/home/pi/hottub_cocoon/besgo/')
 from main_besgo import Main_Besgo
-sys.path.append('/home/pi/hottub_ma/plc/')
+sys.path.append('/home/pi/hottub_cocoon/plc/')
 from main_plc import Main_PLC
 from modbus import Modbus
-sys.path.append('/home/pi/hottub_ma/relay/')
+sys.path.append('/home/pi/hottub_cocoon/relay/')
 from main_relay import Main_relay
-sys.path.append('/home/pi/hottub_ma/ph/')
+sys.path.append('/home/pi/hottub_cocoon/ph/')
 from main_ph import Main_PH
-sys.path.append('/home/pi/hottub_ma/volttag/')
+sys.path.append('/home/pi/hottub_cocoon/volttag/')
 from main_volt_tag import Main_volt_tag
-sys.path.append('/home/pi/hottub_ma/setting/')
+sys.path.append('/home/pi/hottub_cocoon/setting/')
 from setting.path_url import Path_url
-sys.path.append('/home/pi/hottub_ma/heater/')
+sys.path.append('/home/pi/hottub_cocoon/heater/')
 from main_heater import Main_Heater
 
 
@@ -83,7 +83,7 @@ try:
         write_file = Write_file(relay_8, plc, temperature, ph, orp, read_pressure)
         write_file.start_write()
 
-        read_status_besgo = open('/home/pi/hottub_ma/txt_file/status_besgo.txt','r')
+        read_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','r')
         status_bes = read_status_besgo.read().rstrip('\n')
 
         #check bypass mode

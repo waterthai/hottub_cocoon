@@ -3,7 +3,7 @@ from urllib.request import urlopen
 import json
 import sys
 import time
-sys.path.append('/home/pi/hottub_ma/setting/')
+sys.path.append('/home/pi/hottub_cocoon/setting/')
 from path_url import Path_url
 
 path_url = Path_url()
@@ -24,7 +24,7 @@ class Main_relay():
         data_json = json.loads(response.read())
         if self.status_filtration ==  True: 
             if str(data_json[0]['sm_filtration']) != "0":
-                read_status_auto = open('/home/pi/hottub_ma/txt_file/status_working_auto.txt','r')
+                read_status_auto = open('/home/pi/hottub_cocoon/txt_file/status_working_auto.txt','r')
                 status_read_filtration_auto = read_status_auto.read().rstrip('\n')
                 if status_read_filtration_auto == "False":
                     if str(data_json[0]['sm_ozone_choc']) == "1":
@@ -68,34 +68,34 @@ class Main_relay():
                 
                 if str(data_json[0]['sm_pump_air']) == "1":
                     if self.status_of_relay[3] == False:
-                        # read_open_air_pump = open('/home/pi/hottub_ma/txt_file/counter_open_air_pump.txt','r')
+                        # read_open_air_pump = open('/home/pi/hottub_cocoon/txt_file/counter_open_air_pump.txt','r')
                         # counter_open_air_pump = int(read_open_air_pump.read())
                         # if counter_open_air_pump < 5:
                         #     sum_counter_open_air_pump = counter_open_air_pump + 1
-                        #     write_open_air_pump = open('/home/pi/hottub_ma/txt_file/counter_open_air_pump.txt','w')
+                        #     write_open_air_pump = open('/home/pi/hottub_cocoon/txt_file/counter_open_air_pump.txt','w')
                         #     write_open_air_pump.write(str(sum_counter_open_air_pump))
                         # else:
                             mod.open_pompe_air()
                 # elif data_json[0]['sm_pump_air'] == "2":
                 elif str(data_json[0]['sm_pump_air']) == "0":
                     if self.status_of_relay[3] == True:
-                        # write_open_air_pump = open('/home/pi/hottub_ma/txt_file/counter_open_air_pump.txt','w')
+                        # write_open_air_pump = open('/home/pi/hottub_cocoon/txt_file/counter_open_air_pump.txt','w')
                         # write_open_air_pump.write("0")
                         mod.close_pompe_air()
                 elif str(data_json[0]['sm_pump_air']) == "2":
                     if self.status_of_relay[2] == True:
                         if self.status_of_relay[3] == False:
-                            # read_open_air_pump = open('/home/pi/hottub_ma/txt_file/counter_open_air_pump.txt','r')
+                            # read_open_air_pump = open('/home/pi/hottub_cocoon/txt_file/counter_open_air_pump.txt','r')
                             # counter_open_air_pump = int(read_open_air_pump.read())
                             # if counter_open_air_pump < 5:
                             #     sum_counter_open_air_pump = counter_open_air_pump + 1
-                            #     write_open_air_pump = open('/home/pi/hottub_ma/txt_file/counter_open_air_pump.txt','w')
+                            #     write_open_air_pump = open('/home/pi/hottub_cocoon/txt_file/counter_open_air_pump.txt','w')
                             #     write_open_air_pump.write(str(sum_counter_open_air_pump))
                             # else:
                                 mod.open_pompe_air()
                     else:
                         # if self.status_of_relay[3] == True:
-                        #     write_open_air_pump = open('/home/pi/hottub_ma/txt_file/counter_open_air_pump.txt','w')
+                        #     write_open_air_pump = open('/home/pi/hottub_cocoon/txt_file/counter_open_air_pump.txt','w')
                         #     write_open_air_pump.write("0")
                             mod.close_pompe_air()
 

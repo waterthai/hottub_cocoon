@@ -1,10 +1,10 @@
 import sys
 import serial
-sys.path.append('/home/pi/hottub_ma/plc/')
+sys.path.append('/home/pi/hottub_cocoon/plc/')
 from modbus import Modbus
-sys.path.append('/home/pi/hottub_ma/relay/')
+sys.path.append('/home/pi/hottub_cocoon/relay/')
 from modbus_relay import Modbus_relay
-sys.path.append('/home/pi/hottub_ma/setting/')
+sys.path.append('/home/pi/hottub_cocoon/setting/')
 from path_url import Path_url
 
 

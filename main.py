@@ -9,20 +9,20 @@ import json
 from close_all import Close_All
 
 
-sys.path.append('/home/pi/hottub_ma/besgo/')
+sys.path.append('/home/pi/hottub_cocoon/besgo/')
 from main_besgo import Main_Besgo
-sys.path.append('/home/pi/hottub_ma/plc/')
+sys.path.append('/home/pi/hottub_cocoon/plc/')
 from main_plc import Main_PLC
 from modbus import Modbus
-sys.path.append('/home/pi/hottub_ma/relay/')
+sys.path.append('/home/pi/hottub_cocoon/relay/')
 from main_relay import Main_relay
-sys.path.append('/home/pi/hottub_ma/ph/')
+sys.path.append('/home/pi/hottub_cocoon/ph/')
 from main_ph import Main_PH
-sys.path.append('/home/pi/hottub_ma/volttag/')
+sys.path.append('/home/pi/hottub_cocoon/volttag/')
 from main_volt_tag import Main_volt_tag
-sys.path.append('/home/pi/hottub_ma/setting/')
+sys.path.append('/home/pi/hottub_cocoon/setting/')
 from path_url import Path_url
-sys.path.append('/home/pi/hottub_ma/heater/')
+sys.path.append('/home/pi/hottub_cocoon/heater/')
 from main_heater import Main_Heater
 from main_heatpump import Main_HeatPump
 
@@ -97,16 +97,16 @@ try:
 
         write_file.start_write(relay_8, plc, temperature, ph, orp, read_pressure, plc_in)
 
-        read_status_besgo = open('/home/pi/hottub_ma/txt_file/status_besgo.txt','r')
+        read_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','r')
         status_bes = read_status_besgo.read().rstrip('\n')
 
         #อ่านค่า set pressure จาก front
-        read_set_pressure = open('/home/pi/hottub_ma/txt_file/set_pressure.txt','r')
+        read_set_pressure = open('/home/pi/hottub_cocoon/txt_file/set_pressure.txt','r')
         set_pressure_text = read_set_pressure.read().rstrip('\n')
         split_set_pressure = set_pressure_text.split(",")
         print("xxxxxxxxxx"+str(plc_in[2]))
         # check nighttime swicth
-        lock_machine = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+        lock_machine = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
         if lock_machine.read() != "":
             sum_counter_lock = write_file.counter_locking(data_setting)
             
@@ -119,7 +119,7 @@ try:
                 print("in of time")
                 #check bypass mode
                 if str(setting_mode[0]['sm_bypass']) == "0":
-                    count_down = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+                    count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
                     if count_down.read() == '':    
                         besgo.start_besgo(current_time, relay_8, plc, setting_mode, setting_selection)
                         if relay_8[4] == True:
@@ -167,7 +167,7 @@ try:
                         
                     
                 else:
-                    count_down = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+                    count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
                     if count_down.read() != '':
                         write_file.clear_pressure_time()
                         counter_pressure = 0
@@ -207,7 +207,7 @@ try:
             print("PLC NOT FALSE"+str(relay_8[4]))
             #check bypass mode
             if str(setting_mode[0]['sm_bypass']) == "0":
-                count_down = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+                count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
                 if count_down.read() == '':
                     besgo.start_besgo(current_time, relay_8, plc, setting_mode, setting_selection)
                     if relay_8[4] == True:
@@ -251,7 +251,7 @@ try:
                         
                     
             else:
-                count_down = open('/home/pi/hottub_ma/txt_file/count_down_close_system.txt','r')
+                count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
                 if count_down.read() != '':
                     write_file.clear_pressure_time()
                     counter_pressure = 0

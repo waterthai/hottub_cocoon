@@ -4,7 +4,7 @@ import sys
 from setting.path_url import Path_url
 import datetime
 from modbus_besgo import Modbus_besgo
-sys.path.append('/home/pi/hottub_ma/plc/')
+sys.path.append('/home/pi/hottub_cocoon/plc/')
 from modbus import Modbus
 
 path_url = Path_url()
@@ -39,7 +39,7 @@ class Main_Besgo():
             plc_read = set_plc_out
             print("--------Besgo-------"+str(besgo_setting_json[0]['backwash_mode']))
             if str(besgo_setting_json[0]['backwash_mode']) == "1":
-                write_status_besgo = open('/home/pi/hottub_ma/txt_file/status_besgo.txt','w')
+                write_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','w')
                 write_status_besgo.write("True")
                 if plc_read[0] == False:
                     mod_plc.start_filtration()
@@ -70,7 +70,7 @@ class Main_Besgo():
                                             mod_besgo.open_besgo()
                                             self.counter_besgo_working = self.counter_besgo_working + 1
                                             self.set_time_working = current_time
-                                            write_status_besgo = open('/home/pi/hottub_ma/txt_file/status_besgo.txt','w')
+                                            write_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','w')
                                             write_status_besgo.write("True")
                                             self.status_working = "working"
                                     # if relay8[4] == True:
@@ -79,14 +79,14 @@ class Main_Besgo():
                                     #     else:
                                     #         mod_besgo.close_besgo()
                                     #         self.counter_besgo_working = self.counter_besgo_working + 1
-                                    #         write_status_besgo = open('/home/pi/hottub_ma/txt_file/status_besgo.txt','w')
+                                    #         write_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','w')
                                     #         write_status_besgo.write("False")
                                     #         self.status_working = 'complete'
                             elif time_split[1] == current_time:    
                                     print("ไม่ทำงาน besgo")
                                     if relay8[4] == True:
                                         mod_besgo.close_besgo()
-                                    write_status_besgo = open('/home/pi/hottub_ma/txt_file/status_besgo.txt','w')
+                                    write_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','w')
                                     write_status_besgo.write("False")
                                     self.counter_besgo_working = 0
                                     self.status_working = ""
@@ -97,7 +97,7 @@ class Main_Besgo():
                 if int(setting_mode[0]['sm_filtration']) == 0:
                     if relay8[4] == False:
                         mod_plc.stop_filtration()
-                write_status_besgo = open('/home/pi/hottub_ma/txt_file/status_besgo.txt','w')
+                write_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','w')
                 write_status_besgo.write("False")
     
 

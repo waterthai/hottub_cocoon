@@ -3,9 +3,9 @@ import time
 from urllib.request import urlopen
 import json
 import sys
-sys.path.append('/home/pi/hottub_ma/setting/')
+sys.path.append('/home/pi/hottub_cocoon/setting/')
 from path_url import Path_url
-sys.path.append('/home/pi/hottub_ma/relay/')
+sys.path.append('/home/pi/hottub_cocoon/relay/')
 from modbus_relay import Modbus_relay
 
 path_url = Path_url()
@@ -50,7 +50,7 @@ class Main_PLC():
 
 
         if data_json[0]['sm_filtration'] == "1":
-            write_status_auto = open('/home/pi/hottub_ma/txt_file/status_working_auto.txt','w')
+            write_status_auto = open('/home/pi/hottub_cocoon/txt_file/status_working_auto.txt','w')
             write_status_auto.write("False")
             if status_plc_out[0] == False:
                 mod.start_filtration()
@@ -123,11 +123,11 @@ class Main_PLC():
                 mod.stop_filtration()
             if status_plc_out[0] == False:
                 if status_plc_out[1] == True:
-                    write_close_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','r')
+                    write_close_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','r')
                     counter_close_ozone_pump = int(write_close_ozone_pump.read())
                     if counter_close_ozone_pump < 5:
                         sum_counter_close_ozone_pump = counter_close_ozone_pump + 1
-                        write_clear_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','w')
+                        write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
                         write_clear_ozone_pump.write(str(sum_counter_close_ozone_pump))
                     else:
                         mod.stop_ozone_pump()
@@ -135,7 +135,7 @@ class Main_PLC():
                     mod.stop_chauffage()
 
     def auto_filtration_working(self, data_time_status,status_plc_out, data_json, data_setting):
-        write_status_auto = open('/home/pi/hottub_ma/txt_file/status_working_auto.txt','w')
+        write_status_auto = open('/home/pi/hottub_cocoon/txt_file/status_working_auto.txt','w')
         write_status_auto.write("True")
         if str(data_time_status) != "0":
             if status_plc_out[0] == False:
@@ -161,7 +161,7 @@ class Main_PLC():
                     self.close_ozone_choc()
             elif str(data_json[0]['sm_ozone_choc']) == "0":
                 self.close_ozone_choc()
-            read_status_heater = open('/home/pi/hottub_ma/txt_file/status_working_heater.txt','r')
+            read_status_heater = open('/home/pi/hottub_cocoon/txt_file/status_working_heater.txt','r')
             set_heater_text = read_status_heater.read().rstrip('\n')
             print("xxxxxxxxxxx"+str(set_heater_text))
             if str(set_heater_text) == "False":
@@ -177,42 +177,42 @@ class Main_PLC():
                 if data_json[0]['sm_pomp_ozone'] != "0" :
                     if str(data_json[0]['sm_pomp_ozone']) == "1":
                         if status_plc_out[1] == False:
-                            write_clear_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','w')
+                            write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
                             write_clear_ozone_pump.write("0")
                             mod.start_ozone_pump()
                     elif str(data_json[0]['sm_pomp_ozone']) == "2" :
                         if self.status_relay[2] == True:
                             if status_plc_out[1] == False:
-                                write_clear_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','w')
+                                write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
                                 write_clear_ozone_pump.write("0")
                                 mod.start_ozone_pump()
                         else:
                             if status_plc_out[1] == True:
-                                write_close_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','r')
+                                write_close_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','r')
                                 counter_close_ozone_pump = int(write_close_ozone_pump.read())
                                 if counter_close_ozone_pump < 5:
                                     sum_counter_close_ozone_pump = counter_close_ozone_pump + 1
-                                    write_clear_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','w')
+                                    write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
                                     write_clear_ozone_pump.write(str(sum_counter_close_ozone_pump))
                                 else:
                                     mod.stop_ozone_pump()
                 else:
                     if status_plc_out[1] == True :
-                        write_close_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','r')
+                        write_close_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','r')
                         counter_close_ozone_pump = int(write_close_ozone_pump.read())
                         if counter_close_ozone_pump < 5:
                             sum_counter_close_ozone_pump = counter_close_ozone_pump + 1
-                            write_clear_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','w')
+                            write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
                             write_clear_ozone_pump.write(str(sum_counter_close_ozone_pump))
                         else:
                             mod.stop_ozone_pump()
         else:
             if status_plc_out[1] == True :
-                write_close_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','r')
+                write_close_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','r')
                 counter_close_ozone_pump = int(write_close_ozone_pump.read())
                 if counter_close_ozone_pump < 5:
                     sum_counter_close_ozone_pump = counter_close_ozone_pump + 1
-                    write_clear_ozone_pump =  open('/home/pi/hottub_ma/txt_file/counter_close_ozone_pump.txt','w')
+                    write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
                     write_clear_ozone_pump.write(str(sum_counter_close_ozone_pump))
                 else:
                     mod.stop_ozone_pump()

@@ -26,12 +26,14 @@ class Main_PLC():
     status_working = 1
     temperature = 0.00
     status_plc = ''
+    current_hour = ''
 
-    def __init__(self, system_datetime, temperature, plc, relay_8):
+    def __init__(self, system_datetime, temperature, plc, relay_8, current_hour):
         self.system_datetime = system_datetime
         self.temperature = temperature
         self.status_plc = plc
         self.status_relay = relay_8
+        self.current_hour = current_hour
 
     def start_plc(self):
         status_plc_out = self.status_plc
@@ -50,7 +52,7 @@ class Main_PLC():
 
 
         if data_json[0]['sm_filtration'] == "1":
-            write_status_auto = open('/home/pi/hottub_cocoon/txt_file/status_working_auto.txt','w')
+            write_status_auto = open('/home/pi/txt_file/status_working_auto.txt','w')
             write_status_auto.write("False")
             if status_plc_out[0] == False:
                 mod.start_filtration()
@@ -65,55 +67,57 @@ class Main_PLC():
 
         elif data_json[0]['sm_filtration'] == "2":     
             print("Filtration Auto Mode")
+            if data_time_status[int(self.current_hour)] != 0:
+                self.auto_filtration_working(data_time_status[int(self.current_hour)], status_plc_out, data_json, data_setting)
             #สั่งเปิดเมื่อ เวลาที่ set filtration
-            if self.system_datetime >= "00:00" and self.system_datetime <= '00:59':
-                self.auto_filtration_working(data_time_status[0], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "01:00" and self.system_datetime <= '01:59':
-                self.auto_filtration_working(data_time_status[1], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "02:00" and self.system_datetime <= '02:59':
-                self.auto_filtration_working(data_time_status[2], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "03:00" and self.system_datetime <= '03:59':
-                self.auto_filtration_working(data_time_status[3], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "04:00" and self.system_datetime <= '04:59':
-               self.auto_filtration_working(data_time_status[4], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "05:00" and self.system_datetime <= '05:59':
-                self.auto_filtration_working(data_time_status[5], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "06:00" and self.system_datetime <= '06:59':
-                self.auto_filtration_working(data_time_status[6], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "07:00" and self.system_datetime <= '07:59':
-                self.auto_filtration_working(data_time_status[7], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "08:00" and self.system_datetime <= '08:59':
-               self.auto_filtration_working(data_time_status[8], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "09:00" and self.system_datetime <= '09:59':
-                self.auto_filtration_working(data_time_status[9], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "10:00" and self.system_datetime <= '10:59':
-                self.auto_filtration_working(data_time_status[10], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "11:00" and self.system_datetime <= '11:59':
-                self.auto_filtration_working(data_time_status[11], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "12:00" and self.system_datetime <= '12:59':
-                self.auto_filtration_working(data_time_status[12], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "13:00" and self.system_datetime <= '13:59':
-                self.auto_filtration_working(data_time_status[13], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "14:00" and self.system_datetime <= '14:59':
-               self.auto_filtration_working(data_time_status[14], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "15:00" and self.system_datetime <= '15:59':
-                self.auto_filtration_working(data_time_status[15], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "16:00" and self.system_datetime <= '16:59':
-                self.auto_filtration_working(data_time_status[16], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "17:00" and self.system_datetime <= '17:59':
-                self.auto_filtration_working(data_time_status[17], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "18:00" and self.system_datetime <= '18:59':
-                self.auto_filtration_working(data_time_status[18], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "19:00" and self.system_datetime <= '19:59':
-                self.auto_filtration_working(data_time_status[19], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "20:00" and self.system_datetime <= '20:59':
-                self.auto_filtration_working(data_time_status[20], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "21:00" and self.system_datetime <= '21:59':
-                self.auto_filtration_working(data_time_status[21], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "22:00" and self.system_datetime <= '22:59':
-                self.auto_filtration_working(data_time_status[22], status_plc_out, data_json, data_setting)
-            elif self.system_datetime >= "23:00"   and self.system_datetime <= '23:59':
-                self.auto_filtration_working(data_time_status[23], status_plc_out, data_json, data_setting)
+            # if self.system_datetime >= "00:00" and self.system_datetime <= '00:59':
+            #     self.auto_filtration_working(data_time_status[0], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "01:00" and self.system_datetime <= '01:59':
+            #     self.auto_filtration_working(data_time_status[1], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "02:00" and self.system_datetime <= '02:59':
+            #     self.auto_filtration_working(data_time_status[2], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "03:00" and self.system_datetime <= '03:59':
+            #     self.auto_filtration_working(data_time_status[3], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "04:00" and self.system_datetime <= '04:59':
+            #    self.auto_filtration_working(data_time_status[4], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "05:00" and self.system_datetime <= '05:59':
+            #     self.auto_filtration_working(data_time_status[5], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "06:00" and self.system_datetime <= '06:59':
+            #     self.auto_filtration_working(data_time_status[6], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "07:00" and self.system_datetime <= '07:59':
+            #     self.auto_filtration_working(data_time_status[7], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "08:00" and self.system_datetime <= '08:59':
+            #    self.auto_filtration_working(data_time_status[8], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "09:00" and self.system_datetime <= '09:59':
+            #     self.auto_filtration_working(data_time_status[9], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "10:00" and self.system_datetime <= '10:59':
+            #     self.auto_filtration_working(data_time_status[10], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "11:00" and self.system_datetime <= '11:59':
+            #     self.auto_filtration_working(data_time_status[11], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "12:00" and self.system_datetime <= '12:59':
+            #     self.auto_filtration_working(data_time_status[12], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "13:00" and self.system_datetime <= '13:59':
+            #     self.auto_filtration_working(data_time_status[13], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "14:00" and self.system_datetime <= '14:59':
+            #    self.auto_filtration_working(data_time_status[14], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "15:00" and self.system_datetime <= '15:59':
+            #     self.auto_filtration_working(data_time_status[15], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "16:00" and self.system_datetime <= '16:59':
+            #     self.auto_filtration_working(data_time_status[16], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "17:00" and self.system_datetime <= '17:59':
+            #     self.auto_filtration_working(data_time_status[17], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "18:00" and self.system_datetime <= '18:59':
+            #     self.auto_filtration_working(data_time_status[18], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "19:00" and self.system_datetime <= '19:59':
+            #     self.auto_filtration_working(data_time_status[19], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "20:00" and self.system_datetime <= '20:59':
+            #     self.auto_filtration_working(data_time_status[20], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "21:00" and self.system_datetime <= '21:59':
+            #     self.auto_filtration_working(data_time_status[21], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "22:00" and self.system_datetime <= '22:59':
+            #     self.auto_filtration_working(data_time_status[22], status_plc_out, data_json, data_setting)
+            # elif self.system_datetime >= "23:00"   and self.system_datetime <= '23:59':
+            #     self.auto_filtration_working(data_time_status[23], status_plc_out, data_json, data_setting)
                
           
         else :
@@ -123,11 +127,11 @@ class Main_PLC():
                 mod.stop_filtration()
             if status_plc_out[0] == False:
                 if status_plc_out[1] == True:
-                    write_close_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','r')
+                    write_close_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','r')
                     counter_close_ozone_pump = int(write_close_ozone_pump.read())
                     if counter_close_ozone_pump < 5:
                         sum_counter_close_ozone_pump = counter_close_ozone_pump + 1
-                        write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
+                        write_clear_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','w')
                         write_clear_ozone_pump.write(str(sum_counter_close_ozone_pump))
                     else:
                         mod.stop_ozone_pump()
@@ -135,7 +139,7 @@ class Main_PLC():
                     mod.stop_chauffage()
 
     def auto_filtration_working(self, data_time_status,status_plc_out, data_json, data_setting):
-        write_status_auto = open('/home/pi/hottub_cocoon/txt_file/status_working_auto.txt','w')
+        write_status_auto = open('/home/pi/txt_file/status_working_auto.txt','w')
         write_status_auto.write("True")
         if str(data_time_status) != "0":
             if status_plc_out[0] == False:
@@ -161,7 +165,7 @@ class Main_PLC():
                     self.close_ozone_choc()
             elif str(data_json[0]['sm_ozone_choc']) == "0":
                 self.close_ozone_choc()
-            read_status_heater = open('/home/pi/hottub_cocoon/txt_file/status_working_heater.txt','r')
+            read_status_heater = open('/home/pi/txt_file/status_working_heater.txt','r')
             set_heater_text = read_status_heater.read().rstrip('\n')
             print("xxxxxxxxxxx"+str(set_heater_text))
             if str(set_heater_text) == "False":
@@ -177,42 +181,42 @@ class Main_PLC():
                 if data_json[0]['sm_pomp_ozone'] != "0" :
                     if str(data_json[0]['sm_pomp_ozone']) == "1":
                         if status_plc_out[1] == False:
-                            write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
+                            write_clear_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','w')
                             write_clear_ozone_pump.write("0")
                             mod.start_ozone_pump()
                     elif str(data_json[0]['sm_pomp_ozone']) == "2" :
                         if self.status_relay[2] == True:
                             if status_plc_out[1] == False:
-                                write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
+                                write_clear_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','w')
                                 write_clear_ozone_pump.write("0")
                                 mod.start_ozone_pump()
                         else:
                             if status_plc_out[1] == True:
-                                write_close_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','r')
+                                write_close_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','r')
                                 counter_close_ozone_pump = int(write_close_ozone_pump.read())
                                 if counter_close_ozone_pump < 5:
                                     sum_counter_close_ozone_pump = counter_close_ozone_pump + 1
-                                    write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
+                                    write_clear_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','w')
                                     write_clear_ozone_pump.write(str(sum_counter_close_ozone_pump))
                                 else:
                                     mod.stop_ozone_pump()
                 else:
                     if status_plc_out[1] == True :
-                        write_close_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','r')
+                        write_close_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','r')
                         counter_close_ozone_pump = int(write_close_ozone_pump.read())
                         if counter_close_ozone_pump < 5:
                             sum_counter_close_ozone_pump = counter_close_ozone_pump + 1
-                            write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
+                            write_clear_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','w')
                             write_clear_ozone_pump.write(str(sum_counter_close_ozone_pump))
                         else:
                             mod.stop_ozone_pump()
         else:
             if status_plc_out[1] == True :
-                write_close_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','r')
+                write_close_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','r')
                 counter_close_ozone_pump = int(write_close_ozone_pump.read())
                 if counter_close_ozone_pump < 5:
                     sum_counter_close_ozone_pump = counter_close_ozone_pump + 1
-                    write_clear_ozone_pump =  open('/home/pi/hottub_cocoon/txt_file/counter_close_ozone_pump.txt','w')
+                    write_clear_ozone_pump =  open('/home/pi/txt_file/counter_close_ozone_pump.txt','w')
                     write_clear_ozone_pump.write(str(sum_counter_close_ozone_pump))
                 else:
                     mod.stop_ozone_pump()

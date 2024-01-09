@@ -138,9 +138,9 @@ class Modbus_read():
             instrument.serial.timeout  = 1  
             temp =  instrument.read_register(6)
             string_volt = str(temp)
-            print("string_volt"+str(string_volt))
+          
             len_string = len(string_volt)
-            print(len_string)
+
             len_decimal = len_string - 1
             string_integer = string_volt[0:len_decimal -2]
             string_dec = string_volt[1 : 3]

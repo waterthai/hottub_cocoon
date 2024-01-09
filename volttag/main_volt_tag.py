@@ -30,11 +30,11 @@ class Main_volt_tag():
             txt_set = volt_set+","+volt_set1+","+volt_set2
             # txt_set = "0,0,0"
 
-            open_volt = open("/home/pi/hottub_cocoon/txt_file/volt_tag.txt","w")
+            open_volt = open("/home/pi/txt_file/volt_tag.txt","w")
             open_volt.write(str(txt_set))
         else:
             txt_set = "0,0,0"
-            open_volt = open("/home/pi/hottub_cocoon/txt_file/volt_tag.txt","w")
+            open_volt = open("/home/pi/txt_file/volt_tag.txt","w")
             open_volt.write(str(txt_set))
 
 

@@ -52,51 +52,42 @@ url_selection = path_url.url_selection
 def counter_before_backwash():
     while True:
         try:
-            read_status_backwash = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','r')
-            status_backwash = read_status_backwash.read().rstrip('\n')
-            if str(status_backwash) == "True":
-                read_counter_backwash = open('/home/pi/hottub_cocoon/txt_file/counter_start_before_backwash.txt','r') 
-                number_counter_backwash = read_counter_backwash.read().rstrip('\n')
-                sum_counter = int(number_counter_backwash) + 1
-                print("COUNTER BEFORE BACKWASH : "+str(sum_counter))
-                with open('/home/pi/hottub_cocoon/txt_file/counter_start_before_backwash.txt','w') as write_counter:
-                    write_counter.write(str(sum_counter))
-                    write_counter.close()
+            with open('/home/pi/txt_file/status_besgo.txt','r') as read_status_backwash:
+                status_backwash = read_status_backwash.readline().strip()
+            if status_backwash == "True":
+                with open('/home/pi/txt_file/counter_start_before_backwash.txt','r')  as read_counter_backwash:
+                    number_counter_backwash = int(read_counter_backwash.readline().strip()) + 1
+                with open('/home/pi/txt_file/counter_start_before_backwash.txt','w') as write_counter:
+                    write_counter.write(str(number_counter_backwash))
             time.sleep(1)
         except:
             pass
                
-        
 def counter_start_backwash_time():
     while True:
         try:
-            read_status_backwash = open('/home/pi/hottub_cocoon/txt_file/status_besgo_start_counter.txt','r')
-            status_backwash = read_status_backwash.read().rstrip('\n')
-            if str(status_backwash) == "True":
-                read_counter_backwash = open('/home/pi/hottub_cocoon/txt_file/counter_backwash_working.txt','r') 
-                number_counter_backwash = read_counter_backwash.read().rstrip('\n')
-                sum_counter = int(number_counter_backwash) + 1
-                print("COUNTER WORKING BACKWASH : "+str(sum_counter))
-                with open('/home/pi/hottub_cocoon/txt_file/counter_backwash_working.txt','w') as write_counter:
-                    write_counter.write(str(sum_counter))
-                    write_counter.close()
+            with open('/home/pi/txt_file/status_besgo_start_counter.txt','r') as read_status_backwash:
+                status_backwash = read_status_backwash.readline().strip()
+            if status_backwash == "True":
+                with open('/home/pi/txt_file/counter_backwash_working.txt','r')  as read_counter_backwash:
+                    number_counter_backwash = int(read_counter_backwash.readline().strip()) + 1
+                with open('/home/pi/txt_file/counter_backwash_working.txt','w') as write_counter:
+                    write_counter.write(str(number_counter_backwash))   
             time.sleep(1)
         except:
             pass
+
 def counter_start_heater():
     while True:
         try:
-            read_status_auto = open('/home/pi/hottub_cocoon/txt_file/status_working_heater.txt','r')
-            status_working = read_status_auto.read().rstrip('\n')
+            with open('/home/pi/txt_file/status_working_heater.txt','r') as read_status_auto:
+                status_working = read_status_auto.readline().strip()
             if status_working == "True":
-                read_counter_open = open('/home/pi/hottub_cocoon/txt_file/counter_open_heater.txt','r')
-                counter_open_heater = read_counter_open.read().rstrip('\n')
-                if int(counter_open_heater) <= 60:
-                    sum_counter_heater = int(counter_open_heater) + 1
-                    with open('/home/pi/hottub_cocoon/txt_file/counter_open_heater.txt','w') as write_counter_open:
-                        write_counter_open.write(str(sum_counter_heater))
-                        write_counter_open.close()
-
+                with open('/home/pi/txt_file/counter_open_heater.txt','r') as read_counter_open:
+                    counter_open_heater = int(read_counter_open.readline().strip()) + 1
+                if counter_open_heater <= 60:
+                    with open('/home/pi/txt_file/counter_open_heater.txt','w') as write_counter_open:
+                        write_counter_open.write(str(counter_open_heater))
             time.sleep(1)
         except:
             pass
@@ -110,15 +101,14 @@ start_counter_backwash.start()
 start_counter_heater =  threading.Thread(target=counter_start_heater, args=())
 start_counter_heater.start()
 
-try:
-    while True:
-        print("WORKING HOTTUB")
+
+while True:
+    try:
         system_time = datetime.datetime.now()
         current_time = system_time.strftime("%H:%M")
         current_hour =  system_time.strftime("%H")
         current_minute =  system_time.strftime("%M")
         sec_time =  system_time.strftime("%S")
-        print("-------sec-----------"+str(sec_time)+"----------"+str(current_hour))
 
         response_setting = urlopen(url_setting)
         data_setting = json.loads(response_setting.read())
@@ -131,33 +121,33 @@ try:
 
 
         read_pressure =  modbus_read.read_pressure(data_setting)
-        print("pressure"+str(read_pressure))
+      
 
         relay_8 = modbus_read.read_status_relay()
-        print("relay"+str(relay_8))
+       
 
 
         # #read plc
         plc = modbus_read.read_status_plc_out()
-        print("plc"+str(plc))
+       
 
         
         plc_in = modbus_read.read_status_plc_in()
-        print("plc in"+str(plc_in))
+       
         
         # #read temperature
         temperature = modbus_read.read_temperature(data_setting)
-        print("temp"+str(temperature))
+        
         # read ph
         ph = 0
         if int(setting_selection[0]['ph']) == 1:
             ph = modbus_read.read_ph()
-        print("ph"+str(ph))
+     
         #read orp
         orp = 0
         if int(setting_selection[0]['orp']) == 1:
             orp = modbus_read.read_orp()
-        print("orp"+str(orp))
+     
         #write file 
         heatpump = False
         if int(setting_selection[0]['heat_pump_heater']) == 1 or int(setting_selection[0]['heat_pump_cooling']) == 1 or  int(setting_selection[0]['heat_pump_all']) == 1:
@@ -165,16 +155,16 @@ try:
 
         write_file.start_write(relay_8, plc, temperature, ph, orp, read_pressure, plc_in)
 
-        read_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','r')
+        read_status_besgo = open('/home/pi/txt_file/status_besgo.txt','r')
         status_bes = read_status_besgo.read().rstrip('\n')
 
         #อ่านค่า set pressure จาก front
-        read_set_pressure = open('/home/pi/hottub_cocoon/txt_file/set_pressure.txt','r')
+        read_set_pressure = open('/home/pi/txt_file/set_pressure.txt','r')
         set_pressure_text = read_set_pressure.read().rstrip('\n')
         split_set_pressure = set_pressure_text.split(",")
 
         # check nighttime swicth
-        lock_machine = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
+        lock_machine = open('/home/pi/txt_file/count_down_close_system.txt','r')
         if lock_machine.read() != "":
             sum_counter_lock = write_file.counter_locking(data_setting)
             
@@ -184,35 +174,38 @@ try:
         plc_all_in = modbus_read.read_all_plc_in()
         plc_all_out = modbus_read.read_all_plc_out()
         #ตรวจาอยลูกลอย
-        read_loading_in_tank = open('/home/pi/hottub_cocoon/txt_file/stop_loading_in_tank.txt','r')
+        read_loading_in_tank = open('/home/pi/txt_file/stop_loading_in_tank.txt','r')
         status_loading_in_tank = read_loading_in_tank.read().rstrip('\n')
+
+        #ปุ่มกดปั้ม manual ถ้าไฟอิน ขากำหนด ทริก ไปตรวจสอบสถานะปั้ม ja ทำงานอยู่หรือไม่ ถ้าไม่ให้ส่งข้อมูลไปบันทึก mysql และส่ง data ขึ้น server เป็นโหมด manual
+        
 
         if status_loading_in_tank == "False":
             if str(plc_all_in[6]) == "False" : 
-                print("ปิด JA")
+               
                 if plc[0] == True:
                     plc_mod.stop_filtration()
             
             if str(plc_all_in[7]) =='False':
-                print("เปิด โซลินอย")
+              
                 if plc_all_out[15] == False:
                     mod_relay.open_solenoid()
             else:
-                print("เปิด JA")
+              
                 if plc[0] == False and setting_mode[0]['sm_filtration'] == 1: 
                     plc_mod.start_filtration()
             
             if plc_all_in[8] == True:
-                print("ปิด โซลินอย"+str(plc_all_out[15]))
+             
                 if plc_all_out[15] == True:
                     mod_relay.close_solenoid()
         if str(plc_all_in[7]) == "True":
             if plc_in[2] == False:
                 if int(current_hour) < 21 and int(current_hour) > 7 : 
-                    print("in of time")
+
                     #check bypass mode
                     if str(setting_mode[0]['sm_bypass']) == "0":
-                        count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
+                        count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
                         if count_down.read() == '':    
                             besgo.start_besgo(current_time, relay_8, plc, setting_mode, setting_selection,plc_all_in)
                             if relay_8[4] == True:
@@ -221,7 +214,7 @@ try:
                                 else:
                                     heater.start_heater(temperature, plc, relay_8)
                             if status_bes == "False":
-                                main_plc = Main_PLC(current_time, temperature, plc, relay_8)
+                                main_plc = Main_PLC(current_time, temperature, plc, relay_8, current_hour)
                                 main_plc.start_plc()
 
                                 main_relay = Main_relay(relay_8, plc[0])
@@ -239,16 +232,20 @@ try:
                                 if plc[0] == True and relay_8[4] == False:
                                     if float(split_set_pressure[0]) > float(read_pressure):
                                         counter_pressure = counter_pressure + 1
-                                        print('xxxxxxxpressure counterxxxxxxxx'+str(counter_pressure))
+                                       
                                         if counter_pressure == int(split_set_pressure[1]) :
                                             minus_hour = int(current_hour) + int(split_set_pressure[2])
                                             set_new_time = str(minus_hour)+':'+str(sec_time)
                                             write_file.write_over_presssure(set_new_time)
-                                        
+                            else:
+                                if status_loading_in_tank == "True":
+                                    close_all.start_close_plc(plc)
+                                    if plc[0] == False:
+                                        main_relay = Main_relay(relay_8, plc[0])
+                                        main_relay.start_relay()        
 
                                     
                         else:
-                            print("close Anoter Time")
                             close_all.start_close_plc(plc)
                             if plc[0] == False:
                                 main_relay = Main_relay(relay_8, plc[0])
@@ -260,7 +257,7 @@ try:
                             
                         
                     else:
-                        count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
+                        count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
                         if count_down.read() != '':
                             write_file.clear_pressure_time()
                             counter_pressure = 0
@@ -272,7 +269,7 @@ try:
                                 heater.start_heater(temperature, plc, relay_8)
 
                         if status_bes == "False":
-                            main_plc = Main_PLC(current_time, temperature, plc, relay_8)
+                            main_plc = Main_PLC(current_time, temperature, plc, relay_8, current_hour)
                             main_plc.start_plc()
 
                             main_relay = Main_relay(relay_8, plc[0])
@@ -286,21 +283,26 @@ try:
                                     main_pump.start_heatpump(temperature, plc, relay_8, heatpump,plc_all_in)
                             else:
                                 heater.start_heater(temperature, plc, relay_8)
+                        else:
+                            if status_loading_in_tank == "True":
+                                close_all.start_close_plc(plc)
+                                if plc[0] == False:
+                                    main_relay = Main_relay(relay_8, plc[0])
+                                    main_relay.start_relay()    
                             
                         time.sleep(0.5)
                         volt.start_volt(setting_selection)
-                else:
-                    print("out of time")
+                else:     
                     close_all.start_close_plc(plc)
                     if plc[0] == False:
                         main_relay = Main_relay(relay_8, plc[0])
                         main_relay.start_relay()
                     time.sleep(0.5)
             else:
-                print("PLC NOT FALSE"+str(relay_8[4]))
+             
                 #check bypass mode
                 if str(setting_mode[0]['sm_bypass']) == "0":
-                    count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
+                    count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
                     if count_down.read() == '':
                         besgo.start_besgo(current_time, relay_8, plc, setting_mode, setting_selection,plc_all_in)
                         if relay_8[4] == True:
@@ -310,7 +312,7 @@ try:
                                 heater.start_heater(temperature, plc, relay_8)
                         
                         if status_bes == "False":
-                            main_plc = Main_PLC(current_time, temperature, plc, relay_8)
+                            main_plc = Main_PLC(current_time, temperature, plc, relay_8, current_hour)
                             main_plc.start_plc()
 
                             main_relay = Main_relay(relay_8, plc[0])
@@ -327,11 +329,16 @@ try:
                             if plc[0] == True and relay_8[4] == False:
                                 if float(split_set_pressure[0]) > float(read_pressure):
                                     counter_pressure = counter_pressure + 1
-                                    print('xxxxxxxpressure counterxxxxxxxx'+str(counter_pressure))
                                     if counter_pressure == int(split_set_pressure[1]) :
                                         minus_hour = int(current_hour) + int(split_set_pressure[2])
                                         set_new_time = str(minus_hour)+':'+str(sec_time)
                                         write_file.write_over_presssure(set_new_time)
+                        else:
+                            if status_loading_in_tank == "True":
+                                close_all.start_close_plc(plc)
+                                if plc[0] == False:
+                                    main_relay = Main_relay(relay_8, plc[0])
+                                    main_relay.start_relay()    
                     else:
                         close_all.start_close_plc(plc)
                         if plc[0] == False:
@@ -344,7 +351,7 @@ try:
                             
                         
                 else:
-                    count_down = open('/home/pi/hottub_cocoon/txt_file/count_down_close_system.txt','r')
+                    count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
                     if count_down.read() != '':
                         write_file.clear_pressure_time()
                         counter_pressure = 0
@@ -356,7 +363,7 @@ try:
                             else:
                                 heater.start_heater(temperature, plc, relay_8)
                     if status_bes == "False":
-                        main_plc = Main_PLC(current_time, temperature, plc, relay_8)
+                        main_plc = Main_PLC(current_time, temperature, plc, relay_8, current_hour)
                         main_plc.start_plc()
 
                         main_relay = Main_relay(relay_8, plc[0])
@@ -370,6 +377,13 @@ try:
                             main_pump.start_heatpump(temperature, plc, relay_8, heatpump)
                         else:
                             heater.start_heater(temperature, plc, relay_8)
+                    else:
+                        if status_loading_in_tank == "True":
+                            close_all.start_close_plc(plc)
+                            if plc[0] == False:
+                                main_relay = Main_relay(relay_8, plc[0])
+                                main_relay.start_relay()    
+                            
                         
                     time.sleep(0.5)
                     volt.start_volt(setting_selection)
@@ -379,6 +393,6 @@ try:
             if plc[0] == False:
                 main_relay = Main_relay(relay_8, plc[0])
                 main_relay.start_relay()
-except:
-    restart_programs()
+    except:
+        pass
 

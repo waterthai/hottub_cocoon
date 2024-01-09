@@ -43,21 +43,23 @@ class Main_Besgo():
             if str(besgo_setting_json[0]['backwash_mode']) == "1":
                 with open('/home/pi/txt_file/status_besgo.txt','w')  as write_status_besgo:
                     write_status_besgo.write("True")
+                    write_status_besgo.close()
                 #ปิดการทำงาน อ่านค่า Sensor 
                 with open('/home/pi/txt_file/stop_loading_in_tank.txt','w')  as write_loading_in_tank:
                     write_loading_in_tank.write("True")
+                    write_loading_in_tank.close()
                 #อ่านค่า counter เพื่อดับเครื่องทั้งหมดเพื่อให้เติมน้ำเข้าแท้ง
-                with open("/home/pi/txt_file/counter_start_before_backwash.txt","r") as read_counter_before_backwash:
-                    number_counter_before_backwash = read_counter_before_backwash.readline().strip()
+                read_counter_before_backwash = open("/home/pi/txt_file/counter_start_before_backwash.txt","r")
+                number_counter_before_backwash = read_counter_before_backwash.read().rstrip('\n')
                 print("xxxxxxxxxxxxx backwash read : "+str(number_counter_before_backwash))
                 if int(number_counter_before_backwash) <= (int(besgo_setting_json[0]['backwash_countdown']) * 60):
                     if plc_read[0] == True:
                         mod_plc.stop_filtration()
-                        
                 else:
                     #เปิดการทำงาน อ่านค่า Sensor ปกติ
                     with open('/home/pi/txt_file/stop_loading_in_tank.txt','w')  as write_loading_in_tank:
                         write_loading_in_tank.write("False")
+                        write_loading_in_tank.close()
                     #ตั้งสถานะให้อ่าน counter backwash กำลังทำงานจาก Thread 
                     if plc_all_in[6] == True: 
                         if plc_all_in[7] == True:
@@ -75,8 +77,8 @@ class Main_Besgo():
                 
             elif str(besgo_setting_json[0]['backwash_mode']) == "2":
                 print("backwash AUTO")
-                with open('/home/pi/txt_file/status_besgo.txt','r') as read_status_besgo:
-                    status_backwash = read_status_besgo.readline().strip()
+                read_status_besgo = open('/home/pi/txt_file/status_besgo.txt','r')
+                status_backwash = read_status_besgo.read().rstrip('\n')
                 if status_backwash == "False":
                     for i in range(len(besgo_json)):
                         for j in range(len(besgo_json[i][0])):
@@ -87,11 +89,11 @@ class Main_Besgo():
                                 if time_split[0] == current_time : 
                                     with open('/home/pi/txt_file/status_besgo.txt','w')  as write_status_besgo:
                                         write_status_besgo.write("True")
-                            
+                                        write_status_besgo.close()
                                     #ปิดการทำงาน อ่านค่า Sensor 
                                     with open('/home/pi/txt_file/stop_loading_in_tank.txt','w')  as write_loading_in_tank:
                                         write_loading_in_tank.write("True")
-                                       
+                                        write_loading_in_tank.close()
                                 #     if plc_read[0] == False:
                                 #         mod_plc.start_filtration()
                                 #     else:
@@ -114,8 +116,8 @@ class Main_Besgo():
                                 #         self.counter_besgo_working = 0
                                 #         self.status_working = ""
                 else:
-                    with open("/home/pi/txt_file/counter_start_before_backwash.txt","r") as read_counter_before_backwash:
-                        number_counter_before_backwash = read_counter_before_backwash.readline().strip()
+                    read_counter_before_backwash = open("/home/pi/txt_file/counter_start_before_backwash.txt","r")
+                    number_counter_before_backwash = read_counter_before_backwash.read().rstrip('\n')
                     print("xxxxxxxxxxxxx backwash read : "+str(number_counter_before_backwash))
                     if int(number_counter_before_backwash) <= (int(besgo_setting_json[0]['backwash_countdown']) * 60):
                         if plc_read[0] == True:
@@ -124,11 +126,12 @@ class Main_Besgo():
                         #เปิดการทำงาน อ่านค่า Sensor ปกติ
                         with open('/home/pi/txt_file/stop_loading_in_tank.txt','w')  as write_loading_in_tank:
                             write_loading_in_tank.write("False")
-                            
+                            write_loading_in_tank.close()
                         with open('/home/pi/txt_file/status_besgo_start_counter.txt','w') as status_besgo_start_counter:
                             status_besgo_start_counter.write("True")
-                        with open('/home/pi/txt_file/counter_backwash_working.txt','r')  as read_counter_backwash:
-                            number_counter_backwash = read_counter_backwash.readline().strip()
+                            status_besgo_start_counter.close()
+                        read_counter_backwash = open('/home/pi/txt_file/counter_backwash_working.txt','r') 
+                        number_counter_backwash = read_counter_backwash.read().rstrip('\n')
                         if int(number_counter_backwash) <= int(besgo_setting_json[0]['backwash_time']):
                         #ตั้งสถานะให้อ่าน counter backwash กำลังทำงานจาก Thread 
                             if plc_all_in[6] == True: 
@@ -148,19 +151,19 @@ class Main_Besgo():
                                 mod_besgo.close_besgo()
                             with open('/home/pi/txt_file/status_besgo.txt','w') as write_status_besgo:
                                 write_status_besgo.write("False")
-                               
+                                write_status_besgo.close()
                             with open('/home/pi/txt_file/counter_start_before_backwash.txt','w') as write_counter_in_tank:
                                 write_counter_in_tank.write(str(0))
-                                
+                                write_counter_in_tank.close()
                             with open('/home/pi/txt_file/counter_backwash_working.txt','w') as write_counter:
                                 write_counter.write(str(0))
-                               
+                                write_counter.close()
                             with open('/home/pi/txt_file/status_besgo_start_counter.txt','w')  as status_open_backwash:
                                     status_open_backwash.write("False")
-                                    
+                                    status_open_backwash.close()
                             with open('/home/pi/txt_file/stop_loading_in_tank.txt','w')  as write_loading_in_tank:
                                     write_loading_in_tank.write("False")
-                                   
+                                    write_loading_in_tank.close()
 
                     
                                     
@@ -172,19 +175,19 @@ class Main_Besgo():
                         mod_plc.stop_filtration()
                 with open('/home/pi/txt_file/status_besgo.txt','w') as write_status_besgo:
                     write_status_besgo.write("False")
-                   
+                    write_status_besgo.close()
                 with open('/home/pi/txt_file/counter_start_before_backwash.txt','w') as write_counter_in_tank:
                     write_counter_in_tank.write(str(0))
-                    
+                    write_counter_in_tank.close()
                 with open('/home/pi/txt_file/counter_backwash_working.txt','w') as write_counter:
                     write_counter.write(str(0))
-                   
+                    write_counter.close()
                 with open('/home/pi/txt_file/status_besgo_start_counter.txt','w')  as status_open_backwash:
-                    status_open_backwash.write("False")
-                        
+                        status_open_backwash.write("False")
+                        status_open_backwash.close()
                 with open('/home/pi/txt_file/stop_loading_in_tank.txt','w')  as write_loading_in_tank:
-                    write_loading_in_tank.write("False")
-                        
+                        write_loading_in_tank.write("False")
+                        write_loading_in_tank.close()
                
     
 

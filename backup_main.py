@@ -83,7 +83,7 @@ try:
         write_file = Write_file(relay_8, plc, temperature, ph, orp, read_pressure)
         write_file.start_write()
 
-        read_status_besgo = open('/home/pi/hottub_cocoon/txt_file/status_besgo.txt','r')
+        read_status_besgo = open('/home/pi/txt_file/status_besgo.txt','r')
         status_bes = read_status_besgo.read().rstrip('\n')
 
         #check bypass mode

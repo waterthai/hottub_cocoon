@@ -115,7 +115,7 @@ while True:
 
         response_setting_mode =  urlopen(url_setting_mode)
         setting_mode = json.loads(response_setting_mode.read())
-
+        print(setting_mode)
         response_selection =  urlopen(url_selection)
         setting_selection = json.loads(response_selection.read())
 
@@ -164,8 +164,11 @@ while True:
         split_set_pressure = set_pressure_text.split(",")
 
         # check nighttime swicth
-        lock_machine = open('/home/pi/txt_file/count_down_close_system.txt','r')
-        if lock_machine.read() != "":
+        # lock_machine = open('/home/pi/txt_file/count_down_close_system.txt','r')
+        myFile = os.path.abspath("/home/pi/txt_file/count_down_close_system.txt")
+        with open(myFile, "r") as file:
+            check_close = file.read().rstrip("\n")
+        if check_close != "":
             sum_counter_lock = write_file.counter_locking(data_setting)
             
             if str(setting_mode[0]['sm_bypass']) == "1":
@@ -199,14 +202,19 @@ while True:
              
                 if plc_all_out[15] == True:
                     mod_relay.close_solenoid()
+
         if str(plc_all_in[7]) == "True":
             if plc_in[2] == False:
                 if int(current_hour) < 21 and int(current_hour) > 7 : 
 
                     #check bypass mode
                     if str(setting_mode[0]['sm_bypass']) == "0":
-                        count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
-                        if count_down.read() == '':    
+                        print('no by pass')
+                        # count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
+                        myFile = os.path.abspath("/home/pi/txt_file/count_down_close_system.txt")
+                        with open(myFile, "r") as file:
+                            check_close = file.read().rstrip("\n")
+                        if check_close == '':    
                             besgo.start_besgo(current_time, relay_8, plc, setting_mode, setting_selection,plc_all_in)
                             if relay_8[4] == True:
                                 if int(setting_selection[0]['heat_pump_heater']) == 1 or int(setting_selection[0]['heat_pump_cooling']) == 1 or  int(setting_selection[0]['heat_pump_all']) == 1:
@@ -232,6 +240,7 @@ while True:
                                 if plc[0] == True and relay_8[4] == False:
                                     if float(split_set_pressure[0]) > float(read_pressure):
                                         counter_pressure = counter_pressure + 1
+                                        print("counter close filtration"+str(counter_pressure))
                                        
                                         if counter_pressure == int(split_set_pressure[1]) :
                                             minus_hour = int(current_hour) + int(split_set_pressure[2])
@@ -257,8 +266,11 @@ while True:
                             
                         
                     else:
-                        count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
-                        if count_down.read() != '':
+                        # count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
+                        myFile = os.path.abspath("/home/pi/txt_file/count_down_close_system.txt")
+                        with open(myFile, "r") as file:
+                            check_close = file.read().rstrip("\n")
+                        if check_close != '':
                             write_file.clear_pressure_time()
                             counter_pressure = 0
                         besgo.start_besgo(current_time, relay_8, plc, setting_mode, setting_selection,plc_all_in)
@@ -299,11 +311,16 @@ while True:
                         main_relay.start_relay()
                     time.sleep(0.5)
             else:
-             
+                
                 #check bypass mode
                 if str(setting_mode[0]['sm_bypass']) == "0":
-                    count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
-                    if count_down.read() == '':
+                    print('no by pass 2')
+                   
+                    myFile = os.path.abspath("/home/pi/txt_file/count_down_close_system.txt")
+                    with open(myFile, "r") as file:
+                        check_close = file.read().rstrip("\n")
+                    if check_close == "":
+                        print('xxxxxx 1')
                         besgo.start_besgo(current_time, relay_8, plc, setting_mode, setting_selection,plc_all_in)
                         if relay_8[4] == True:
                             if int(setting_selection[0]['heat_pump_heater']) == 1 or int(setting_selection[0]['heat_pump_cooling']) == 1 or  int(setting_selection[0]['heat_pump_all']) == 1:
@@ -312,6 +329,7 @@ while True:
                                 heater.start_heater(temperature, plc, relay_8)
                         
                         if status_bes == "False":
+                            print('xxxxxx 2')
                             main_plc = Main_PLC(current_time, temperature, plc, relay_8, current_hour)
                             main_plc.start_plc()
 
@@ -327,9 +345,14 @@ while True:
                                 heater.start_heater(temperature, plc, relay_8)
 
                             if plc[0] == True and relay_8[4] == False:
+                                print('xxxxxxxxx 3 : ')
+                                print('xxxxxxxxx 4 : '+split_set_pressure[0])
+                                print('xxxxxxxxx 4 : '+split_set_pressure[1])
+                                print('xxxxxxxxx 5 : '+str(read_pressure))
                                 if float(split_set_pressure[0]) > float(read_pressure):
                                     counter_pressure = counter_pressure + 1
-                                    if counter_pressure == int(split_set_pressure[1]) :
+                                    print('xxxxcounter close xxxxx : '+str(counter_pressure))
+                                    if counter_pressure >= int(split_set_pressure[1]) :
                                         minus_hour = int(current_hour) + int(split_set_pressure[2])
                                         set_new_time = str(minus_hour)+':'+str(sec_time)
                                         write_file.write_over_presssure(set_new_time)
@@ -340,6 +363,7 @@ while True:
                                     main_relay = Main_relay(relay_8, plc[0])
                                     main_relay.start_relay()    
                     else:
+                        print('xxxxxx 2')
                         close_all.start_close_plc(plc)
                         if plc[0] == False:
                             main_relay = Main_relay(relay_8, plc[0])
@@ -351,8 +375,11 @@ while True:
                             
                         
                 else:
-                    count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
-                    if count_down.read() != '':
+                    myFile = os.path.abspath("/home/pi/txt_file/count_down_close_system.txt")
+                    with open(myFile, "r") as file:
+                        check_close = file.read().rstrip("\n")
+                    # count_down = open('/home/pi/txt_file/count_down_close_system.txt','r')
+                    if check_close != '':
                         write_file.clear_pressure_time()
                         counter_pressure = 0
 

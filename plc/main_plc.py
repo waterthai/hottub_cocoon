@@ -69,6 +69,18 @@ class Main_PLC():
             print("Filtration Auto Mode")
             if data_time_status[int(self.current_hour)] != 0:
                 self.auto_filtration_working(data_time_status[int(self.current_hour)], status_plc_out, data_json, data_setting)
+            else:
+                print('close all')
+                read_status_heater = open('/home/pi/txt_file/status_working_heater.txt','r')
+                set_heater_text = read_status_heater.readline().strip()
+                if str(set_heater_text)  == "False":
+                    if status_plc_out[0] == True:
+                        mod.stop_filtration()
+                    if status_plc_out[0] == False:
+                        if status_plc_out[1] == True:
+                            mod.stop_ozone_pump()
+                        if status_plc_out[1] == False:
+                            mod.stop_chauffage()
             #สั่งเปิดเมื่อ เวลาที่ set filtration
             # if self.system_datetime >= "00:00" and self.system_datetime <= '00:59':
             #     self.auto_filtration_working(data_time_status[0], status_plc_out, data_json, data_setting)

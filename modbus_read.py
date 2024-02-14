@@ -225,6 +225,7 @@ class Modbus_read():
             return data.bits
         except:
             pass
+        
     def read_all_plc_out(self):
         try:
             client1 = ModbusSerialClient(

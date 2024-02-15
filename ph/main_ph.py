@@ -143,7 +143,7 @@ class Main_PH():
                 if relay8[5] == True:
                     modbus_ph.stop_ph()
                 modbus_ph.write_ph_counter()
-            if int(modbus_ph.read_ph_counter()) >= (int(ph_json[0]['ph_freq']) * 15)  :
+            if int(modbus_ph.read_ph_counter()) >= (int(ph_json[0]['ph_freq']) * 22)  :
             # if int(modbus_ph.read_ph_counter()) >= 10 :
                 modbus_ph.set_ph_counter_zero()
                 
@@ -172,7 +172,7 @@ class Main_PH():
                     modbus_orp.stop_orp()
                 modbus_orp.write_orp_counter()
             #แปลงค่า ครึ่งวิให้เป็น วิ * 2
-            if int(modbus_orp.read_orp_counter()) >= (int(orp_json[0]['orp_freq']) * 15) :
+            if int(modbus_orp.read_orp_counter()) >= (int(orp_json[0]['orp_freq']) * 22) :
             # if int(modbus_orp.read_orp_counter())  >= 10 :
                 modbus_orp.set_orp_counter_zero()
         elif float(read_orp) >= float(orp_json[0]['orp_lower']):

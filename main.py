@@ -141,12 +141,13 @@ while True:
         ph = 0
         if int(setting_selection[0]['ph']) == 1:
             ph = modbus_read.read_ph()
-     
+            
+        print("PH"+str(ph))
         #read orp
         orp = 0
         if int(setting_selection[0]['orp']) == 1:
             orp = modbus_read.read_orp()
-     
+        
         #write file 
         heatpump = False
         if int(setting_selection[0]['heat_pump_heater']) == 1 or int(setting_selection[0]['heat_pump_cooling']) == 1 or  int(setting_selection[0]['heat_pump_all']) == 1:

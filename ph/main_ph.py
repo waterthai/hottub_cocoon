@@ -27,6 +27,7 @@ class Main_PH():
     read_orp_address = 0
     set_relay = ''
     def __init__(self, current_time, set_ph, set_orp, set_relay):
+        
         self.current_time = current_time
         self.read_ph_address = set_ph
         self.read_orp_address = set_orp
@@ -52,7 +53,7 @@ class Main_PH():
         
         #read status 8 relay
         relay8 = self.set_relay
-
+        
         if self.current_time >= "00:00" and self.current_time <= '00:59':
             self.process_woking(data_ph[0]['ph_1'], ph_json, relay8, data_orp[0]['orp_1'], data_apf[0]['apf_1'])
         elif self.current_time >= "01:00" and self.current_time <= '01:59':
@@ -103,12 +104,14 @@ class Main_PH():
             self.process_woking(data_ph[0]['ph_24'], ph_json, relay8, data_orp[0]['orp_24'], data_apf[0]['apf_24'])
 
     def process_woking(self, data_ph, ph_json, relay8, data_orp, data_apf):
-        if data_ph == "1":
+       
+        if str(data_ph) == "1":
+           
             self.process_ph(ph_json, relay8)
         else:
             if relay8[5] == True:
                 modbus_ph.stop_ph()
-        if data_orp == "1":
+        if str(data_orp) == "1":
             self.process_orp(ph_json, relay8)
         else:
             if relay8[6] == True:
@@ -120,11 +123,14 @@ class Main_PH():
                 modbus_apf.stop_apf()
 
     def process_ph(self, ph_json, relay8):
+        print('xxxxxxxxx sw sssssss')
+        print(ph_json[0]['ph_set'])
+        print(relay8)
+        print(self.read_ph_address)
         read_ph = self.read_ph_address
         #อ่าน สถานะ relay
         relay8 = relay8
-     
-    
+
         if float(read_ph) >= float(ph_json[0]['ph_set']):
             print("------------counter ph start---------------"+str(modbus_ph.read_ph_counter()))
             if int(modbus_ph.read_ph_counter()) == 0:
@@ -137,7 +143,7 @@ class Main_PH():
                 if relay8[5] == True:
                     modbus_ph.stop_ph()
                 modbus_ph.write_ph_counter()
-            if int(modbus_ph.read_ph_counter()) >= (int(ph_json[0]['ph_freq']) * 60)  :
+            if int(modbus_ph.read_ph_counter()) >= (int(ph_json[0]['ph_freq']) * 30)  :
             # if int(modbus_ph.read_ph_counter()) >= 10 :
                 modbus_ph.set_ph_counter_zero()
                 
@@ -147,10 +153,16 @@ class Main_PH():
                 modbus_ph.set_ph_counter_zero()
 
     def process_orp(self, orp_json,relay8):
+        print("ORP working")
+        print(orp_json[0]['orp_set'])
+        print(relay8)
+        print(self.read_orp_address)
+
         read_orp = self.read_orp_address
         #อ่าน สถานะ relay
         relay8 = relay8
         if float(read_orp) <= float(orp_json[0]['orp_set']):
+            print("xxxxxxxx counter xxxxxxs "+str(modbus_orp.read_orp_counter()))
             if modbus_orp.read_orp_counter() == 0:
                 if relay8[6] == False:
                     modbus_orp.start_orp()
@@ -160,7 +172,7 @@ class Main_PH():
                     modbus_orp.stop_orp()
                 modbus_orp.write_orp_counter()
             #แปลงค่า ครึ่งวิให้เป็น วิ * 2
-            if int(modbus_orp.read_orp_counter()) >= (int(orp_json[0]['orp_freq']) * 60) :
+            if int(modbus_orp.read_orp_counter()) >= (int(orp_json[0]['orp_freq']) * 30) :
             # if int(modbus_orp.read_orp_counter())  >= 10 :
                 modbus_orp.set_orp_counter_zero()
         elif float(read_orp) >= float(orp_json[0]['orp_lower']):

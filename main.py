@@ -115,7 +115,6 @@ while True:
 
         response_setting_mode =  urlopen(url_setting_mode)
         setting_mode = json.loads(response_setting_mode.read())
-        print(setting_mode)
         response_selection =  urlopen(url_selection)
         setting_selection = json.loads(response_selection.read())
 
@@ -204,6 +203,7 @@ while True:
                     mod_relay.close_solenoid()
 
         if str(plc_all_in[7]) == "True":
+            print("xxxxxx")
             if plc_in[2] == False:
                 if int(current_hour) < 21 and int(current_hour) > 7 : 
 

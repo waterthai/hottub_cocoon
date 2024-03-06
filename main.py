@@ -56,9 +56,14 @@ def counter_before_backwash():
                 status_backwash = read_status_backwash.readline().strip()
             if status_backwash == "True":
                 with open('/home/pi/txt_file/counter_start_before_backwash.txt','r')  as read_counter_backwash:
+                    check_error_code = read_counter_backwash.readline().strip()
+                if check_error_code != '':
                     number_counter_backwash = int(read_counter_backwash.readline().strip()) + 1
-                with open('/home/pi/txt_file/counter_start_before_backwash.txt','w') as write_counter:
-                    write_counter.write(str(number_counter_backwash))
+                    with open('/home/pi/txt_file/counter_start_before_backwash.txt','w') as write_counter:
+                        write_counter.write(str(number_counter_backwash))
+                else:
+                    with open('/home/pi/txt_file/counter_start_before_backwash.txt','w') as write_counter:
+                        write_counter.write('0')
             time.sleep(1)
         except:
             pass

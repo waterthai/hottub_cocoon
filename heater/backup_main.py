@@ -39,7 +39,7 @@ class Main_Heater():
 
                     # minus = float(data_setting[0]['setting_temperature']) - float(data_setting[0]['setting_temp_deff'])
                     if  float(data_setting[0]['setting_temperature']) - float(data_setting[0]['setting_temp_deff']) >=  float(temperature):
-                        print("เปิดปั้ม")
+                        print("open pumpe")
                         read_status_auto = open('/home/pi/txt_file/status_working_heater.txt','w')
                         read_status_auto.write("True")
                         read_counter_open = open('/home/pi/txt_file/counter_open_heater.txt','r')
@@ -54,7 +54,7 @@ class Main_Heater():
                             if plc[2] == True:
                                 mod_heatpump.start_chauffage2()
                     elif float(temperature) >= float(data_setting[0]['setting_temperature']): 
-                        print("ปิดปั้ม")
+                        print("close pumpe")
                         read_status_auto = open('/home/pi/txt_file/status_working_heater.txt','w')
                         read_status_auto.write("False")
                         if plc[2] == True:
@@ -79,7 +79,7 @@ class Main_Heater():
                         if plc[0] == False:
                             plc_mod.start_filtration()
                     else :
-                        print("ปิดปั้ม")
+                        print("close pumpe")
                         read_status_auto = open('/home/pi/txt_file/status_working_heater.txt','w')
                         read_status_auto.write("False")
                         if plc[2] == True:

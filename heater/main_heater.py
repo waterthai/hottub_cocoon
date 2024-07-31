@@ -39,13 +39,13 @@ class Main_Heater():
                             with open('/home/pi/txt_file/status_working_heater.txt','w') as read_status_auto:
                                 read_status_auto.write("True")
                                 read_status_auto.close()
-                            with open('/home/pi/txt_file/counter_open_heater.txt','r') as read_counter_open:
-                                counter_open_heater = read_counter_open.readline().strip()
-                            if float(counter_open_heater) >= 60 :
-                                if plc[2] == False:
-                                    mod_heatpump.start_chauffage()
-                                if plc[2] == True:
-                                    mod_heatpump.start_chauffage2()
+                            # with open('/home/pi/txt_file/counter_open_heater.txt','r') as read_counter_open:
+                            #     counter_open_heater = read_counter_open.readline().strip()
+                            # if float(counter_open_heater) >= 60 :
+                            if plc[2] == False:
+                                mod_heatpump.start_chauffage()
+                            if plc[2] == True:
+                                mod_heatpump.start_chauffage2()
 
                         elif float(temperature) >= float(data_setting[0]['setting_temperature']): 
                           
